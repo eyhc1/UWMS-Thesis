@@ -391,17 +391,20 @@
   \@startsection {section}{1}{\z@}%
        {-3.5ex \@plus -1ex \@minus -.2ex}%
        {2.3ex \@plus.2ex}%
-       {\def\baselinestretch{1.0}\reset@font\fontsize{14pt}{14pt}\selectfont}}
+       {\def\baselinestretch{1.0}\reset@font\fontsize{14pt}{14pt}\selectfont}
+}
 \renewcommand\subsection{%
   \@startsection{subsection}{2}{\z@}%
        {-3.25ex\@plus -1ex \@minus -.2ex}%
        {1.5ex \@plus .2ex}%
-       {\reset@font\normalsize\mdseries\itshape}}
+       {\reset@font\normalsize\mdseries\itshape}
+}
 \renewcommand\subsubsection{%
   \@startsection{subsubsection}{3}{\z@}%
        {-3.25ex\@plus -1ex \@minus -.2ex}%
        {1.5ex \@plus .2ex}%
-       {\reset@font\normalsize\mdseries\itshape}}
+       {\reset@font\normalsize\mdseries\itshape}
+}
 
 % part
 \renewcommand\l@part[2]{%

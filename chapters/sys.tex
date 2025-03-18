@@ -9,15 +9,16 @@
     \label{fig:sys_diagram}
 \end{figure}
 
-The pulse channel is an integral component of an FPGA system designed to generate 32 pulsed AC voltage signals and 32 static voltage signals. This system leverages both the processing systems and the programmable logic of the ZCU102 architecture. A Python-based interface allows users to input specific information about the pulses and voltage signals. This interface translates user requests into custom commands, which are then sent to the processing system via the FPGA's UART interface.
+The pulse channel module is an integral component of an FPGA system designed to generate 32 pulsed AC voltage signals and 32 static voltage signals. This system leverages both the processing systems and the programmable logic of the ZCU102 architecture. A Python-based interface allows users to input specific information about the pulses and voltage signals. This interface translates user requests into custom commands, which are then sent to the processing system via the FPGA's UART interface.
 
-The processing system's ARM-based CPU processes these Python-generated commands, converting them into addresses and data instructions for the FPGA's blocks. Within the FPGA hardware, a router takes the byte-addressable data from the processing system and translates it into block-specific word-addressable data, directing it to the appropriate block. The system comprises three distinct hardware blocks, each serving a unique and critical function. The orange blocks in \autoref{fig:sys_diagram} illustrate the names of these blocks, which will be discussed in detail in the subsequent sections.
+The processing system's ARM-based CPU converts Python-generated commands into addresses and data instructions for the FPGA's blocks. Within the FPGA hardware, a bus router takes the byte-addressable data from the processing system and translates it into block-specific word-addressable data. The system comprises three distinct hardware blocks, each serving a unique and critical function. The orange blocks in \autoref{fig:sys_diagram} illustrate the names of these blocks, which will be discussed in detail in the subsequent sections.
 
 This architecture ensures efficient communication and data processing within the FPGA system, enhancing its overall performance and reliability. By understanding the roles and interactions of these components, students can appreciate the complexity and precision required in FPGA and computer architecture design.
 
-\section{CPU Interface}
+% TODO: this section is more translate Geoff to UW... does it rly needed to be mentioned in the thesis?
+\section{CPU Bus Router}
 
-The system utilizes a CPU interface adapter to bridge between the PS and the PL. This adapter plays a crucial role by converting byte-addressed signals from the PS AXI bus into a 32-bit word-addressed bus, which is essential for the proper functioning of the blocks within the FPGA design. Illustrated in \autoref{table:ps_addr}, the upper bits of the PS address are decoded to select one of the three available blocks in the system. Notably, the interface is designed to support up to four blocks, allowing for future expansion. Once a block is selected, the lower bits of the address, along with the data, are used to either write to or read from the chosen block. This ensures precise and efficient communication between the PS and the selected block. Additionally, a standardized register interface is implemented to provide consistent access for control and status monitoring, thereby enhancing the system's reliability and ease of use. By employing this CPU interface adapter, the system achieves seamless integration between the PS and PL, facilitating efficient data transfer and control across the FPGA design. This design choice not only simplifies the communication process but also ensures scalability and flexibility for future enhancements.
+The system utilizes a CPU interface adapter to bridge between the PS and the PL. This adapter plays a crucial role by converting byte-addressed signals from the PS AXI bus into a 32-bit word-addressed bus, which is essential for the proper functioning of the blocks within the FPGA design. Illustrated in \autoref{table:ps_addr}, the portions of the PS address are decoded to select one of the three available blocks in the system. Once a block is selected, the lower bits of the address are used to either write to or read from the chosen block. This ensures precise and efficient communication between the PS and the selected block. Additionally, a standardized register interface is implemented in each block to provide consistent access for control and status monitoring, thereby enhancing the system's reliability and ease of use. By employing this CPU interface adapter, the system achieves seamless integration between the PS and PL, facilitating efficient data transfer and control across the FPGA design. This design choice not only simplifies the communication process but also ensures scalability and flexibility for future enhancements.
 
  
 % TODO: HOW TF do I properly set the addr table in latex....
@@ -27,7 +28,8 @@ The system utilizes a CPU interface adapter to bridge between the PS and the PL.
 \includegraphics[width=1.0\textwidth]{figures/pc_address.png}
 \label{table:ps_addr}
 \end{table}
-\section{Static DC Voltage}
+
+\section{Static DC Voltage Block}
 % TODO: replace with a clear picture
 \begin{figure}[h]
     \centering
@@ -41,14 +43,8 @@ The DC block provides stable and programmable static voltage control using four 
 \begin{table}[h]
 \centering
 
-\caption{SPI DAC message format [XX]}
-% \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
-% \hline
-% 31 & 28 & 24 & 22 & & & \multicolumn{1}{l}{8} & \multicolumn{1}{l}{7} & \multicolumn{1}{r}{0} \\
-% \hline
-% 0 & Update DAC & 0 & \multicolumn{2}{|c|}{Channel select} & \multicolumn{2}{|c|}{Data} & 0 \\
-% \hline
-% \end{tabular}
+\caption{SPI DAC message format \cite{ad5628}}
+
 \includegraphics[width=1.0\textwidth]{figures/spi_addr.png}
 \label{table:spi_addr}
 \end{table}
@@ -59,11 +55,12 @@ The module supports write operations to update DAC channels and control features
 V_{out} = V_{ref} \times \frac{D}{2^{12}}
 \end{equation}
 
-Where $V_{out}$ is the voltage output by the DAC, $V_{ref}$ is the DAC's reference voltage, and $D$ is the data from the processing system [XX]. This design ensures precise and flexible static voltage control. The use of multiple DACs and independent SPI modules allows for efficient handling of numerous voltage channels, providing enhanced control and reliability.
+Where $V_{out}$ is the voltage output by the DAC, $V_{ref}$ is the DAC's reference voltage, and $D$ is the data from the processing system \cite{ad5628}. This design ensures precise and flexible static voltage control. The use of multiple DACs and independent SPI modules allows for efficient handling of numerous voltage channels, providing enhanced control and reliability.
 
-\section{Pulse Generation and Management}
+\section{Pulse AC Voltage Block}
 
-The pulse generation module—also referred to as the AC block—is a sophisticated, synchronous multi-channel pulsed waveform generator designed to deliver precise control for laser operations on phonetic chips. Its architecture generates pulse sequences with a remarkable 10-nanosecond resolution across 32 channels, ensuring that each digital output is perfectly synchronized. This synchronization proves essential for high-speed digital-to-analog conversion, enabling accurate reconstruction of analog signals in the time-sensitive quantum applications.
+The pulse generation module—also referred to as the AC block—is a sophisticated, synchronous multi-channel pulsed waveform generator designed to deliver precise control for laser operations on the phonetic chips. Its architecture generates pulse sequences with a remarkable 10-nanosecond resolution across 32 channels, ensuring that each digital output is perfectly synchronized. This synchronization proves essential for high-speed digital-to-analog conversion, enabling accurate reconstruction of analog signals.
+% TODO: rename to CCP
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\linewidth]{figures/5.3.png}
@@ -72,23 +69,21 @@ The pulse generation module—also referred to as the AC block—is a sophistica
 \end{figure}
 The AC block acts as the central coordinator for all pulse channels. A Central Coordinator Process (CC-P) manages both external control signals and error notifications from individual channels, ensuring reliable overall performance. Central to its operation is a 24-bit counter that functions as a common timer, as seen in \autoref{fig:george}. Upon receiving an external trigger, this counter initiates the timing process uniformly for all channels. It continues until it reaches either a user-defined sequence length or its maximum value, at which point it sends stop signals to halt pulse generation. This coordinated stopping mechanism is critical because it maintains timing precision and prevents runaway pulses that could lead to data inconsistencies.
 
-A series of internal registers underpin the module's functionality. These registers store key parameters such as the total sequence length, the active channels, and the specific data paths for channel memories reading and writing operations. Values are loaded into these registers via the CPU interface, which streams configuration data from the processing system. The design supports simultaneous writing to multiple channels, an essential feature for updating waveform parameters in parallel. However, because the data bus is only 32 bits wide, the system restricts read operations to one channel at a time, thereby preserving data integrity during retrieval.
+A series of internal registers underpin the module's functionality. These registers store key parameters such as the total sequence length, the active channels, and the specific data paths for channels' memories reading and writing operations. Values are loaded into these registers via the CPU interface, which streams configuration data from the processing system. The design supports simultaneous writing to multiple channels, an essential feature for updating waveform parameters in parallel. However, because the data bus is only 32 bits wide, the system limits read operations to one channel at a time, thereby preserving data integrity during retrieval.
 
 The module also incorporates an innovative addressing scheme that clearly distinguishes between channel-specific memory and internal control registers. The lower address range is reserved for waveform data and precise pulse parameters, while the upper range is dedicated to registers for the CC-P. Registers for settings such as sequence length, channel enables, and channel selections are both readable and writable. This bidirectional access permits real-time control and monitoring of each channel, facilitating adjustments as operational conditions change. In contrast, dedicated read-only registers continuously convey status information from both the module and the individual pulse channels.
 
-Error handling within the AC block is equally streamlined. As discussed in section X, each pulse channel generates error signals that are collected as multi-bit vectors. The CC-P then transposes these into several 32-bit registers, with each register corresponding to a specific error type as defined in \autoref{table:erro_regs}. Within a given register, each bit represents the status of an error flag for one of the 32 channels. This systematic condensation of error information into a single-dimensional format simplifies monitoring and debugging processes, enabling engineers to quickly identify and address issues.
-
-Overall, the AC block's design is both concise and modular. Its synchronized timing, robust control through internal registers, and innovative addressing scheme collectively ensure accurate pulse generation and efficient error management. By abstracting complex hardware interactions into a well-organized, user-friendly format, this module not only improves system reliability but also provides a clear insight into its operation for students and professionals alike, bridging the gap between sophisticated hardware design and practical application.
+Error handling within the AC block is equally streamlined. As discussed, each pulse channel generates error signals that are collected as multi-bit vectors. The CC-P then transposes these into several 32-bit registers, with each register corresponding to a specific error type defined in \autoref{table:erro_regs}. Within a given register, each bit represents the status of one of the 32 channels. This systematic condensation of error information into a single-dimensional format simplifies monitoring and debugging processes, enabling engineers to quickly identify and address issues.
 
 \section{Miscellaneous}
 
-The miscellaneous block is a versatile control and status interface integrated into the system. It manages a variety of auxiliary functions that streamline control processes. This module organizes essential operations, such as managing system interfacing, monitoring status, and distributing control signals. Its primary role is to bridge CPU control with hardware functionality through several dedicated registers. These registers handle tasks such as version reporting, LED indication, and debug routing. A notable feature is its configurable LED control system. This system allows either CPU software or FPGA hardware to drive status indicators based on the LED enable register settings, providing flexibility and accurate control. By establishing a robust boundary between software and hardware domains, the module ensures comprehensive system control while maintaining clear architectural separation. Isolating these auxiliary functions enhances maintainability, simplifies debugging, and promotes reusability. Beyond its fundamental capabilities, the miscellaneous block streamlines operations and supports a modular system architecture.
+The miscellaneous block is a versatile control and status interface integrated into the system. It manages a variety of auxiliary functions that streamline control processes. This module organizes essential operations, such as managing system interfacing, monitoring status, and distributing control signals. Its primary role is to bridge CPU control with hardware functionality through several dedicated registers. These registers handle tasks such as version reporting, LED indication, and debug routing. A notable feature is its configurable LED control system. This system allows either PS or PL to drive status indicators based on the LED enable register settings, providing flexibility and accurate control. Isolating these auxiliary functions enhances maintainability, simplifies debugging, and promotes reusability. Beyond its fundamental capabilities, the miscellaneous block streamlines operations and supports a modular system architecture.
 
 \section{Software Control Interface}
-
+% TODO: change this section to match the actual python once it has been re-made
 A robust software interface is as crucial as the FPGA hardware itself for system success. The dedicated Python package translates user-defined waveform values and pulse information into precise addresses and data formats that the hardware readily interprets. This abstraction bridges the gap between users with limited hardware design experience and the intricate nature of FPGA architectures. By automating tasks such as memory management and data formatting, the system enables users to focus on refining their quantum control strategies rather than wrestling with low-level operations. This design philosophy enhances both usability and performance across the entire framework.
 
-The interface functions much like a streamlined web API, allowing users to submit waveform data and update parameters seamlessly. For every entry, the software automatically locates the next available memory space, computes the starting address and length, and allocates the data accordingly—returning a unique waveform ID for straightforward reference. This methodical allocation ensures that inputs accumulate properly and that any error due to exceeding available memory is promptly flagged. Additionally, the system archives each waveform record in a dedicated file, providing traceability as detailed in \autoref{table:param_rec_table}.
+The interface functions similarly to a streamlined web API, allowing users to submit waveform data and update parameters seamlessly. For every entry, the software automatically locates the next available memory space, computes the starting address and length, and allocates the data accordingly—returning a unique waveform ID for straightforward reference. This methodical allocation ensures that inputs accumulate properly and that any error due to exceeding available memory is promptly flagged. Additionally, the system archives each waveform record in a dedicated file, providing traceability as detailed in \autoref{table:param_rec_table}.
 
 \begin{table}[h]
 \centering
@@ -122,4 +117,4 @@ Channel 1 & wave ID & Start time & Time factor & Gain factor & Sustain time \\
 \end{tabular}
 \end{table}
 
-After processing, the serial interface passes these hardware-ready values to a custom Python class that integrates them with precise control subroutines designed for the FPGA. Communication with the embedded ARM CPU is maintained via a UART connection, with the third-party PYSerial package ensuring reliable data transfer. Commands transmitted by the Python class are interpreted by the ARM CPU to activate specific design blocks, as defined in \autoref{fig:sys_diagram}. This layered control strategy not only streamlines user interaction but also preserves the precision and high performance required by contemporary FPGA applications.
+After processing, the serial interface passes these hardware-ready values to a custom Python class that integrates them with precise control subroutines designed for the FPGA. Communication with the embedded ARM CPU is maintained via a UART connection, with the third-party PYSerial package ensuring reliable data transfer. Commands transmitted by the Python class are interpreted by the PS to activate specific design blocks defined in \autoref{fig:sys_diagram}. This layered control strategy not only streamlines user interaction but also preserves the precision and high performance required by contemporary FPGA applications.
