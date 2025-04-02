@@ -2,63 +2,69 @@
 
 % TODO: rewrite to independent from the test plan (may removed)
 \section{Simulation Result}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\linewidth]{figures/6.1.png}
+    \caption{\centering{Simulation result of \textbf{a.} Seed with incorrect parameters and \textbf{b.} Seed with normal parameters}}
+    \label{fig:6.1}
+\end{figure}
+To validate the functionality and ensure the reliability of the pulse channel module, a controlled randomized regression test was designed and implemented. This test serves as a comprehensive evaluation of the module’s performance across several critical aspects. Specifically, it examines the module's ability to execute memory read and write operations efficiently, preserve data accuracy during these processes, and manage potential errors effectively. These assessments are crucial for identifying and resolving any latent issues that could compromise the module's functionality in practical applications. The results of this testing process provide significant insights into the module's behavior and confirm its expected performance. \autoref{fig:6.1} illustrates two simulation outcomes, both generated using Intel ModelSim, which visually validate the module’s operation under the given test scenarios.
 
-To validate the pulse channel module's functionality and ensure its reliability, a controlled randomized regression test is designed and implemented. This test comprehensively assesses several aspects of the module, including the ability to perform memory read and write operations, maintain data accuracy, and handle errors effectively. By scrutinizing these critical areas, the test ensures that the module operates as expected under various conditions.
+% A key component of this test is the use of a seed value to manage the randomization process. This seed, which begins at one and increments sequentially by one with each iteration, introduces controlled variability into the test inputs. The randomization ensures that the module's memories are subjected to diverse data patterns. These values are simultaneously applied to the module's memory system and a corresponding software model, which serves as a theoretical benchmark. By comparing the module's output with the software model, the hardware's accuracy is rigorously verified.
 
-A key component of this test is the use of a seed value to manage the randomization process. This seed, which begins at one and increments sequentially by one with each iteration, introduces controlled variability into the test inputs. The randomization ensures that the module's memories are subjected to diverse data patterns. These values are simultaneously applied to the module's memory system and a corresponding software model, which serves as a theoretical benchmark. By comparing the module's output with the software model, the hardware's accuracy is rigorously verified.
+% \autoref{table:error_results} offers an illustrative snapshot of the first ten iterations of the regression test, outlining several key performance metrics. The column labeled "Seed" denotes the specific randomization seed used during each test, providing insight into the exact conditions under which the test was conducted. The "Time" metric indicates the elapsed duration from when a pulse is triggered to when the corresponding error is detected. Additionally, the "Error/Delta" value represents the ratio between the observed error and the reference delta, offering a quantitative measure of performance discrepancies. It is calculated by
+% \begin{equation}
+% \frac{Error}{Delta} = \frac{|\text{theoretical value} - \text{actual value}|}{|\text{current hardware output} - \text{previous hardware output}|}
+% \end{equation}
+% Finally, the "Pulse Number" specifies the sequential order of the pulse that produced the largest error-to-delta ratio during that iteration. Together, these detailed metrics enable us to thoroughly assess how the module responds under a wide spectrum of conditions, ultimately affirming its reliability and adherence to our stringent performance criteria.
 
-\autoref{table:error_results} offers an illustrative snapshot of the first ten iterations of this regression test, outlining several key performance metrics. The column labeled "Seed" denotes the specific randomization seed used during each test, providing insight into the exact conditions under which the test was conducted. The "Time" metric indicates the elapsed duration from when a pulse is triggered to when the corresponding error is detected. Additionally, the "Error/Delta" value represents the ratio between the observed error and the reference delta, offering a quantitative measure of performance discrepancies. It is calculated by
-\begin{equation}
-\frac{Error}{Delta} = \frac{|\text{theoretical value} - \text{actual value}|}{|\text{current hardware output} - \text{previous hardware output}|}
-\end{equation}
-Finally, the "Pulse Number" specifies the sequential order of the pulse that produced the largest error-to-delta ratio during that iteration. Together, these detailed metrics enable us to thoroughly assess how the module responds under a wide spectrum of conditions, ultimately affirming its reliability and adherence to our stringent performance criteria.
-
-\begin{table}[h]
-\centering
-\caption{Simulation results for first 10 seeds}
-\begin{tabular}{|c|c|c|c|}
-\hline
-Seed & Time (ns) & Error/Delta & Pulse Number \\
-\hline
-1 & 159490 & 0.0035 & 3 \\
-2 & 175960 & 0.1932 & 4 \\
-3 & 189310 & 0.0096 & 5 \\
-4 & 156640 & 0.0149 & 2 \\
-5 & 159900 & 0.0022 & 2 \\
-6 & 159090 & 0.3055 & 3 \\
-7 & 161220 & 0.2224 & 3 \\
-8 & 163910 & 0.1640 & 3 \\
-9 & 134220 & 0.0164 & 0 \\
-10 & 134220 & 0.0302 & 0 \\
-\hline
-\end{tabular}
-\label{table:error_results}
-\end{table}
+% \begin{table}[h]
+% \centering
+% \caption{Simulation results for first 10 seeds}
+% \begin{tabular}{|c|c|c|c|}
+% \hline
+% Seed & Time (ns) & Error/Delta & Pulse Number \\
+% \hline
+% 1 & 159490 & 0.0035 & 3 \\
+% 2 & 175960 & 0.1932 & 4 \\
+% 3 & 189310 & 0.0096 & 5 \\
+% 4 & 156640 & 0.0149 & 2 \\
+% 5 & 159900 & 0.0022 & 2 \\
+% 6 & 159090 & 0.3055 & 3 \\
+% 7 & 161220 & 0.2224 & 3 \\
+% 8 & 163910 & 0.1640 & 3 \\
+% 9 & 134220 & 0.0164 & 0 \\
+% 10 & 134220 & 0.0302 & 0 \\
+% \hline
+% \end{tabular}
+% \label{table:error_results}
+% \end{table}
 
 
 \section{Board Result}
 % TODO: need to collect something from the scope from 137 (Geoff's not good)
-The system is examined using both an external hardware setup and Xilinx's Integrated Logic Analyzer (ILA). The external setup validates the overall functionality through peripheral interactions, while the ILA monitors internal signals from multiple modules, including the single pulse channel module.  This dual-method evaluation is essential to identify potential issues that simulations alone might overlook and to confirm that the system meets the rigorous performance standards expected in FPGA and computer architecture designs.
+The system is examined using Xilinx's Integrated Logic Analyzer (ILA) to validate the overall functionality and internal signals from multiple modules, including the single pulse channel module.  
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{figures/ila.png}
     \caption{ILA monitored the result (131,072 samples) from the top level.}
     \label{fig:ila}
 \end{figure}
-The ILA plays a crucial role in verifying the precise timing of waveform generation triggered externally. Traditional oscilloscopes often struggle to capture such high-resolution timing details, making the ILA essential for this role. For this experiment, a simple waveform—comprising the sequence 4, 5, 6, and 7 starting at the earliest possible time—is fed into the hardware. The result measures the delay between the external trigger and the first output by monitoring channel 0 at the top-level CC-P, specifically noting when the value 4 is emitted. As illustrated in \autoref{fig:ila}, the first output appears after 8 cycles, with each cycle lasting 10 nanoseconds. This timing results in an 80-nanosecond delay, confirming that the pulse generation operates well within the sub-microsecond range required for quantum control hardware. Furthermore, the ILA data shows that data updates occur every 10 nanoseconds, demonstrating the rapid switching performance essential for high-speed applications. Such precise control and measurement are critical for ensuring that the system meets the rigorous demands of modern FPGA-based designs and quantum control systems.
+% The ILA plays a crucial role in verifying the precise timing of waveform generation triggered externally. Traditional oscilloscopes often struggle to capture such high-resolution timing details, making the ILA essential for this role. 
+For this experiment, a simple waveform comprising the sequences 4, 5, 6, and 7 starting at the earliest possible time (50ns) is fed into the hardware. The result measures the delay between the external trigger and the first output by monitoring channel 0 at the top-level CC-P. The result in \autoref{fig:ila} shows the first output appears after 8 cycles, with each cycle lasting 10 nanoseconds. This timing results in an 80-nanosecond delay, confirming that the pulse generation operates well within the sub-microsecond range required for quantum control hardware. Furthermore, the ILA data shows that data updates occur every 10 nanoseconds, demonstrating the rapid switching performance essential for high-speed applications.
 
 \section{Resource Utilization}
 
-In FPGA design, efficient resource utilization is essential for ensuring a high-quality, reliable system. One of the most critical aspects of this evaluation is timing analysis. After implementation, the Xilinx Vivado tool generates an in-depth timing report that details the minimum and maximum delay paths within the design. As shown in \autoref{fig:sta}, the report confirms that the critical timing parameters—both setup and hold times—meet the specified constraints.
-\begin{figure}[h]
+In FPGA design, efficient resource utilization is essential for ensuring a high-quality, reliable system. One of the most critical aspects of this evaluation is timing analysis. After implementation, the Xilinx Vivado tool generates an in-depth timing report that details the minimum and maximum delay paths within the design. Generated reports in \autoref{fig:sta} confirm that the critical timing parameters—both setup and hold times—meet the specified constraints.
+\begin{figure}[ht]
     \centering
     \includegraphics[width=1\linewidth]{figures/timimg_report.png}
     \caption{Partial timing report from Vivado on the worst slack (top) and hold (bottom).}
     \label{fig:sta}
 \end{figure}
-This timing verification is crucial because it ensures that all synchronous elements operate correctly within the designated clock cycle, preventing data corruption and operational failures. By analyzing these delay paths, designers can identify potential bottlenecks and optimize the design to maintain system stability. In essence, the successful meeting of timing requirements signifies that the design can perform reliably under its intended operating conditions, making it suitable for high-speed FPGA applications.
+This timing verification is crucial because it ensures that all synchronous elements operate correctly within the designated clock cycle, preventing data corruption and operational failures. 
 
-\autoref{table:chip_utilization} presents the post-implementation power consumption and resource utilization data from Vivado. The report shows that only a small fraction of the FPGA resources is used. This low usage proves the design is highly efficient. It leaves plenty of headroom for future enhancements. Minimal resource usage reduces power consumption. It also helps the FPGA maintain optimal timing and routing. This efficiency is ideal for scalable systems that may need future modifications. It validates the careful design decisions made during synthesis and optimization.
+\autoref{table:chip_utilization} shows that only a small fraction of the FPGA resources are used. This low usage proves the design's efficiency. Minimal resource usage reduces power consumption. It also helps the FPGA maintain optimal timing and routing. This efficiency is ideal for scalable systems that may need future modifications. It validates the careful design decisions made during synthesis and optimization.
 
 \begin{table}[ht]
 \centering
@@ -82,6 +88,6 @@ Static Power            & 0.750   &       &        &          \\ \hline
 \quad PL Static         & 0.653   &       &        &          \\ \hline
 Total                   & 3.492   &       &        &          \\ \hline
 \end{tabular}
-\caption{On-Chip Resource Utilization Reported by Vivado}
+\caption{Post-Implementation Resource Utilization Reported by Vivado}
 \label{table:chip_utilization}
 \end{table}
