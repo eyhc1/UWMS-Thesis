@@ -109,7 +109,7 @@
 % unusual footnote not found in a real thesis
 % You just use the \titlepage as commented out above
 
-{\Degreetext{A thesis%
+{\Degreetext{A thesis\\
   submitted in partial fulfillment of the\\ requirements for the degree of}
  \let\footnoterule\relax
  \titlepage
@@ -130,6 +130,9 @@
 \setcounter{page}{-1}
 \abstract{%
 % TODO
+Modern quantum computing experiments demand exceptional precision, especially when controlling laser pulses for trapped-ion systems. Recent optical breakthroughs now pack dozens of channels onto a single chip, enabling efficient multichannel laser control. However, the supporting electronics often lack the necessary timing accuracy and flexibility. This shortfall can hinder progress and frustrate researchers.
+
+This thesis presents an FPGA-based laser control system on a Xilinx Zynq platform. A key module generates precise pulse waveforms and integrates into a system that delivers 32 pulsed alongside 32 static voltage signals. By leveraging dual-port block memories, robust state machines, and high-speed interfaces, the system achieves sub-microsecond timing with low resource usage. Simulation and board testing confirm accurate pulse generation while highlighting opportunities for enhanced precision and improved error handling. Overall, this work offers a reliable, scalable, and cost-effective solution for advanced FPGA applications in quantum control.
 }
  
 %
