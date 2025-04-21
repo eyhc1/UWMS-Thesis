@@ -11,9 +11,7 @@
 
 The pulse channel module is an integral component of an FPGA system designed to generate 32 pulsed AC voltage signals and 32 static voltage signals. This system leverages both the processing systems and the programmable logic of the ZCU102 architecture. A Python-based interface allows users to input specific information about the pulses and voltage signals. This interface translates user requests into custom commands, which are then sent to the processing system via the FPGA's UART interface.
 
-The processing system's ARM-based CPU converts Python-generated commands into addresses and data instructions for the FPGA's blocks. Within the FPGA hardware, a bus router takes the byte-addressable data from the processing system and translates it into block-specific word-addressable data. The system comprises three distinct hardware blocks, each serving a unique and critical function. The orange blocks in \autoref{fig:sys_diagram} illustrate the names of these blocks, which will be discussed in detail in the subsequent sections.
-
-This architecture ensures efficient communication and data processing within the FPGA system, enhancing its overall performance and reliability. By understanding the roles and interactions of these components, students can appreciate the complexity and precision required in FPGA and computer architecture design.
+The processing system's ARM-based CPU converts Python-generated commands into addressable instructions for the FPGA's blocks. Within the FPGA hardware, a bus router takes the byte-addressable data from the processing system and translates it into block-specific word-addressable data. The system comprises three distinct hardware blocks, each serving a unique and critical function. The orange blocks in \autoref{fig:sys_diagram} illustrate the names of these blocks, which will be discussed in detail in the subsequent sections. This architecture ensures efficient communication and data processing within the FPGA system, enhancing its overall performance and reliability.
 
 % TODO: this section is more translate Geoff to UW... does it rly needed to be mentioned in the thesis?
 \section{CPU Bus Router}
@@ -81,9 +79,9 @@ The miscellaneous block is a versatile control and status interface integrated i
 
 \section{Software Control Interface}
 % TODO: change this section to match the actual python once it has been re-made
-A robust software interface is as crucial as the FPGA hardware itself for system success. The dedicated Python package translates user-defined waveform values and pulse information into precise addresses and data formats that the hardware readily interprets. This abstraction bridges the gap between users with limited hardware design experience and the intricate nature of FPGA architectures. By automating tasks such as memory management and data formatting, the system enables users to focus on refining their quantum control strategies rather than wrestling with low-level operations. This design philosophy enhances both usability and performance across the entire framework.
+A robust software interface is as crucial as the FPGA hardware itself for system success. The dedicated Python package translates user-defined waveform values and pulse information into precise addresses and data formats for the hardware. This abstraction bridges the gap between users with limited hardware design experience and the intricate nature of FPGA architectures. By automating tasks such as memory management and data formatting, the system enables users to focus on refining their quantum control strategies rather than wrestling with hardware-level operations. This design philosophy enhances both usability and performance across the entire framework.
 
-The interface functions similarly to a streamlined web API, allowing users to submit waveform data and update parameters seamlessly. For every entry, the software automatically locates the next available memory space, computes the starting address and length, and allocates the data accordingly—returning a unique waveform ID for straightforward reference. This methodical allocation ensures that inputs accumulate properly and that any error due to exceeding available memory is promptly flagged. Additionally, the system archives each waveform record in a dedicated file, providing traceability as detailed in \autoref{table:param_rec_table}.
+The interface functions similarly to a streamlined web API, allowing users to submit waveform data and parameters seamlessly. For every pulse entry, the software automatically locates the next available memory space, computes the starting address and length, and allocates the data accordingly—returning a unique waveform ID for straightforward reference. This methodical allocation ensures that inputs accumulate properly and that any error due to exceeding available memory is promptly flagged. Additionally, the system archives each waveform record in a dedicated file, providing traceability as detailed in \autoref{table:param_rec_table}. The first row for each column in the table represents a unique six-digit wave ID. The remaining rows are values for each base waveform.
 
 \begin{table}[h]
 \centering
@@ -91,32 +89,38 @@ The interface functions similarly to a streamlined web API, allowing users to su
 \label{table:param_rec_table}
 \begin{tabular}{|c|c|c|c|c|}
 \hline
-channel 0 & val 0 & val 1 & ... & val N \\
+262144 & 196612 & 327688 & ... & Wave ID abcdef \\
 \hline
-channel 1 & val 0 & val 1 & ... & val N \\
+0 & 0 & 0 & ... & ... \\
 \hline
-\multicolumn{5}{|c|}{...} \\
+1 & 2 & 5 & ... & ... \\
 \hline
-channel 31 & val 0 & val 1 & ... & val N \\
+3 & 5 & 6 & ... & ... \\
+\hline
+4 &  & 8 & ... & ... \\
+\hline
+ &  & 12 & ... & ... \\
 \hline
 \end{tabular}
 \end{table}
 
-In a similar fashion, pulse parameter management is performed through dedicated functions that support both loading and retrieval. Unlike waveform data, which can vary in length and address, pulse parameters are stored in fixed groups of four values. Users provide essential details such as the pulse's start time, time factor, gain factor, and sustain time, along with the relevant waveform ID. The interface then leverages this ID to fetch additional hardware parameters—such as the corresponding waveform's start address and length—converting the user inputs into a hardware-accepted format as outlined in \autoref{fig:pd}b. Corresponding records are then logged in a file following the format shown in \autoref{table:wave_rec_table}
+In a similar fashion, pulse parameter management is performed through dedicated functions that support both loading and retrieval. Unlike waveform data, which can vary in length and address, pulse parameters are stored in fixed groups of four values. Users provide essential details such as the pulse's start time, time factor, gain factor, and sustain time, along with the relevant waveform ID. The interface then leverages this ID to fetch additional hardware parameters—such as the corresponding waveforms start address and length—converting the user inputs into a hardware-accepted format as outlined in \autoref{fig:pd}b. Corresponding records are then logged in a file following the format shown in \autoref{table:wave_rec_table}.
 
 \begin{table}[h]
 \centering
-\caption{Sample Format of the Pulse Parameter Record (2 channels shown)}
+\caption{Sample Format of the Pulse Parameter Record Using \autoref{table:param_rec_table} Waveforms}
 \label{table:wave_rec_table}
-\begin{tabular}{|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|}
 \hline
-Channel \# & \multicolumn{5}{c|}{Values} \\
+Wave ID & Start Time & Scale Gain & Scale Address & Sustain \\
 \hline
-0 & wave ID & Start time & Time factor & Gain factor & Sustain time \\
+262144 & 5 & 0.98 & 1.2 & 5\\
 \hline
-1 & wave ID & Start time & Time factor & Gain factor & Sustain time \\
+196612 & 48 & 1.0 & 1.1 & 7\\
+\hline
+327688 & 100 & 1.0 & 1.0 & 0\\
 \hline
 \end{tabular}
 \end{table}
 
-After processing, the serial interface passes these hardware-ready values to a custom Python class that integrates them with precise control subroutines designed for the FPGA. Communication with the embedded ARM CPU is maintained via a UART connection, with the third-party PYSerial package ensuring reliable data transfer. Commands transmitted by the Python class are interpreted by the PS to activate specific design blocks defined in \autoref{fig:sys_diagram}. This layered control strategy not only streamlines user interaction but also preserves the precision and high performance required by contemporary FPGA applications.
+After processing, the serial interface passes these hardware-ready values to a custom Python class that integrates them with subroutines designed for the FPGA. Communication with the embedded ARM CPU is maintained via a UART connection, with the third-party PYSerial package ensuring reliable data transfer. Commands transmitted by the Python class are interpreted by the PS to activate specific design blocks defined in \autoref{fig:sys_diagram}. This layered control strategy not only streamlines user interaction but also preserves the precision and high performance required by contemporary FPGA applications.
