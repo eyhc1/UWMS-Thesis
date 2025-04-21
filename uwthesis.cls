@@ -348,6 +348,7 @@
 
 % Chapter
 \def\@makechapterhead#1{
+\thispagestyle{myheadings}% avoid the default plain footer number
   % \vspace*{2pc}
   \noindent % Left align instead of center
   \ifnum \c@secnumdepth >\m@ne
