@@ -77,6 +77,7 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{tabularx}
+\usepackage{multirow}
 
 \setlength{\intextsep}{5pt}           % Controls spacing around float environments
 
@@ -92,8 +93,8 @@
 %
 % ----- copyright and title pages
 %
-\Title{Programmable System for Laser Control of Trapped-Ion Experiment}
-\Author{Haochen Yu}
+\Title{Programmable System for Laser Control of Trapped-Ion Experiments}
+\Author{Haochen "Eric" Yu}
 \Year{2025}
 \Program{Electrical and Computer Engineering  }
 
@@ -132,7 +133,7 @@
 % TODO
 Modern quantum computing experiments demand exceptional precision, especially when controlling laser pulses for trapped-ion systems. Recent optical breakthroughs now pack dozens of channels onto a single chip, enabling efficient multichannel laser control. However, the supporting electronics often lack the necessary timing accuracy and flexibility. This shortfall can hinder progress and frustrate researchers.
 
-This thesis presents an FPGA-based laser control system on a Xilinx Zynq platform. A key module generates precise pulse waveforms and integrates into a system that delivers 32 pulsed alongside 32 static voltage signals. By leveraging dual-port block memories, robust state machines, and high-speed interfaces, the system achieves sub-microsecond timing with low resource usage. Simulation and board testing confirm accurate pulse generation while highlighting opportunities for enhanced precision and improved error handling. Overall, this work offers a reliable, scalable, and cost-effective solution for advanced FPGA applications in quantum control.
+This thesis presents an FPGA-based laser control system on a Xilinx Zynq platform. A key module generates precise pulse waveforms and integrates into a system that delivers 32 pulsed alongside 32 static voltage signals. By leveraging dual-port block memories, state machines, and high-speed interfaces, the system achieves sub-microsecond timing with low resource usage. Simulation and board testing confirm accurate pulse generation while highlighting opportunities for enhanced precision and improved error handling. Overall, this work offers a reliable, scalable, and cost-effective solution for advanced FPGA applications in quantum control.
 }
  
 %
@@ -147,11 +148,14 @@ This thesis presents an FPGA-based laser control system on a Xilinx Zynq platfor
 %
 \acknowledgments{% \vskip2pc
   % {\narrower\noindent
+
 I extend my deepest gratitude to everyone who has supported me on this journey. I am especially thankful to my advisor, Professor Scott Hauck, whose guidance and unwavering support have been indispensable. Working in his laboratory provided me with incredible opportunities and invaluable resources that enriched my personal, academic, and professional growth.
 
-I also appreciate Professor Sara Mouradian for serving on my thesis committee. Her thoughtful insights, innovative research, and clear vision have been a driving force behind this project. Her understanding of the project's foundations and her dedication to advancing its potential have been inspirational in pushing boundaries and refining the project.
+I also appreciate Professor Sara Mouradian, a valued member of my thesis committee, has been a driving force behind this project. Her strategic vision and deep understanding of its foundations have consistently propelled innovation and advanced its potential.
 
-I am grateful to my friends and family for their steadfast support. Special thanks to Buke Hu from QT3 Laboratory for providing key papers of the project’s application, Jeffery Xu from Boeing for offering technical guidance during the design process, and Geoffrey Jones for his significant efforts in initiating and directing the project. Lastly, my heartfelt thanks go to my mother, Dr. Li Yang, for her constant encouragement throughout my journey.
+My thanks extend to Geoffrey Jones for his significant contributions. His detailed design insights have been crucial in shaping the entire system. His continued technical support has influenced every stage of the design.
+
+I truly appreciate the support of my friends and family. I am thank to Buke Hu from QT3 Laboratory for providing essential publications on the project’s application, and to Jeffery Xu from Boeing for his technical guidance during the design phase. Lastly, I owe my deepest appreciation to my mother, Dr. Li Yang, whose constant encouragement has been a cornerstone of my journey.
   % \par}
 }
  

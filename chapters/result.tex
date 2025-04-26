@@ -42,16 +42,22 @@ To validate the functionality and ensure the reliability of the pulse channel mo
 
 
 \section{Board Result}
-% TODO: need to collect something from the scope from 137 (Geoff's not good)
-The system is examined using Xilinx's Integrated Logic Analyzer (ILA) to validate the overall functionality and internal signals from multiple modules, including the single pulse channel module.  
+The system is examined using Xilinx's Integrated Logic Analyzer (ILA) to validate signals from multiple modules, including the single pulse channel module.  
 \begin{figure}[h]
     \centering
     \includegraphics[width=1\linewidth]{figures/ila.png}
-    \caption{ILA monitored the result (131,072 samples) from the top level.}
+    \caption{ILA monitored the result from the top level.}
     \label{fig:ila}
 \end{figure}
 % The ILA plays a crucial role in verifying the precise timing of waveform generation triggered externally. Traditional oscilloscopes often struggle to capture such high-resolution timing details, making the ILA essential for this role. 
-For this experiment, a simple waveform comprising the sequences 4, 5, 6, and 7 starting at the earliest possible time (50ns) is fed into the hardware. The result measures the delay between the external trigger and the first output by monitoring channel 0 at the top-level CC-P. The result in \autoref{fig:ila} shows the first output appears after 8 cycles, with each cycle lasting 10 nanoseconds. This timing results in an 80-nanosecond delay, confirming that the pulse generation operates well within the sub-microsecond range required for quantum control hardware. Furthermore, the ILA data shows that data updates occur every 10 nanoseconds, demonstrating the rapid switching performance essential for high-speed applications.
+A 55-sample waveform, starting from a nonzero value at 50 ns, is transmitted to the hardware and captured by the ILA (see \autoref{fig:ila}). The first output appears after 8 cycles, with each cycle lasting 10 nanoseconds. This timing results in an 80-nanosecond delay, confirming that the pulse generation operates well within the sub-microsecond range required for quantum control hardware. Furthermore, the ILA data shows that data updates occur every 10 nanoseconds, demonstrating the rapid switching performance essential for high-speed applications. Additionally, an external oscilloscope recorded a pulse sequence in \autoref{fig:osc}, further verifying the overall functionality and behavior of the design.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.85\linewidth]{figures/one_trig_seq.png}
+    \caption{\centering{A single pulse sequence captured on an oscilloscope. The yellow line is the pulse sequence, the green line is the valid signal, and the red line is the trigger signal.}}
+    \label{fig:osc}
+\end{figure}
+% The ILA plays a 
 
 \section{Resource Utilization}
 
