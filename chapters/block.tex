@@ -71,7 +71,7 @@ The pulse definition memory employs a well-organized addressing scheme, where ea
 The waveform table memory is designed to store the base values for the rise of each pulse. As shown in \autoref{fig:wavetable}, each entry in the table consists of a pair of 16-bit values. This design is necessary because at least two values are required to construct the rise or fall of a pulse. A pulse's rise can store up to 2048 32-bit value pairs, or 4096 16-bit data points, in the waveform table memory. The number of value pairs used for each pulse depends on its waveform length. If the waveform length is even, it takes half of the waveform length in value pairs. If the length is odd, it takes the floor of the waveform length divided by 2, plus the lower value of the next pair.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.30\linewidth]{figures/3.3.png}
+    \includegraphics[width=0.5\linewidth]{figures/3.3.png}
     \caption{Memory layout for waveform table}
     \label{fig:wavetable}
 \end{figure}
