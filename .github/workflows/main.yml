@@ -2,6 +2,9 @@ name: Create PDF
 
 on: [push]
 
+permissions:
+  contents: write
+
 jobs:
   main:
     runs-on: ubuntu-latest
