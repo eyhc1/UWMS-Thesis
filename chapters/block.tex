@@ -1,7 +1,4 @@
 \chapter{Block Architecture}
-% TODO: define more what is going on conceptually, why do we have two tables etc. 
-% Define "pulse" and "waveform"
-% More diagram to explain this
 \section{Functional Specification}
 
 The pulse channel module generates precisely timed laser pulses using user-defined configurations, base waveforms, and a fixed sequence length. It relies on Xilinx block RAM IPs, a robust state machine, and versatile interfaces to produce a 16-bit waveform for an external 16-bit DAC.
@@ -14,7 +11,7 @@ All waveform data and parameters are loaded into RAM via a 32-bit data, 12-bit a
 
 Error handling is integrated into the module. Dedicated error signals are generated during pulse generation to detect anomalies and trigger immediate responses. Pipeline delays are carefully managed to ensure signal synchronization and maintain timing margins across the data path.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=1.0\linewidth]{figures/3.1.png}
     \caption{Block diagram of the pulse channel with two RAMs integrated.}
@@ -100,7 +97,7 @@ The pulse channel is engineered to be highly robust and resilient, capable of ha
 To ensure robust performance, several potential cases must be carefully considered. The design guarantees that pulses begin only when the current time meets or exceeds their scheduled start. Special attention is given to the sustain length. For instance, if a pulse definition specifies a flat-top length of zero, the system immediately transitions to the fall stage. The module also keeps track of the total number of generated pulses using the internal pulse counter, which helps maintain proper sequence control. Moreover, if the start time of a subsequent pulse is earlier than that of the previous one, the pulse is omitted to preserve timing integrity.
 
 Additionally, the design manages cases where the waveform start address and length exceed the 4096-entry capacity of the waveform table memory. In such instances, the system either wraps the addresses correctly back into the valid range or triggers an error flag in an 8-bit register, with each bit defined in \autoref{table:erro_regs}. One-hot encoding ensures that the error register uniquely represents each error condition with a single active flag. When a specific error occurs, the system sets only the corresponding flag. This clear mapping simplifies fault diagnosis and reduces ambiguity during troubleshooting. When an error is detected, the system stops waveform generation to prevent the further propagation of invalid data, thereby maintaining overall system integrity. Furthermore, the registers are designed to log and maintain these error events, aiding in prompt debugging and corrective measures. The error registers can be cleared with an external clear flag or by resetting the system. Some registers have no error details assigned yet, allowing for future expandability based on further testing results.
-\begin{table}[h]
+\begin{table}[ht]
 \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
 \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
 \centering

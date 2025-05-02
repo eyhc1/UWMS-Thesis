@@ -16,7 +16,6 @@ Additionally, although allowing users to write to any memory location increases 
 
 % Subjected for removal if alternate firmware implemented
 \section{Interface Latency}
-% TODO: this is only the idea for new implementation... will get modified a lot after the new interface is done
 Many user-level interfaces are implemented in Python on a separate PC, requiring frequent serial writes to the hardware system. Each UART serial write transmits only 8 bits of data from the host to the FPGA. This limited throughput results in extended read and write times. Tests have shown that reading the entire waveform memory takes three to four seconds on average. Such delays become a significant bottleneck, especially when multiple memory accesses occur during operation.
 
 To mitigate this issue, sophisticated C firmware could replace much of Python's functionality. This firmware would reside on Xilinx's processing system, fully leveraging Zynq's high-speed AXI interface to accelerate data transfers. Instead of relying on Python functions to relay user parameters, the processing system would accept input directly from a command-line interface. Users could manually type parameters or design scripts to automate their entry.

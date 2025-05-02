@@ -16,7 +16,7 @@ A pulse channel module generates sequences of laser pulses with user-defined con
 
 For instance, the rising edge of pulse 0 in \autoref{fig:pulse_seq} follows a curved profile while pulse 1 increases linearly. Since these profiles cannot be interconverted by scaling alone, the user must define two unique waveforms and assign each to the respective pulse configurations. Furthermore, suppose a subsequent pulse, such as pulse 2, is intended to have half the amplitude of pulse 1 while retaining similar waveform characteristics (\autoref{fig:gain_scale_example}). In that case, the configuration should specify that pulse 2 uses the waveform of pulse 1 with a gain factor of 0.5. This structured configuration approach allows the module to adjust pulse characteristics without redefining fundamental waveforms, ensuring precise control over the entire sequence's behavior.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.7\linewidth]{figures/3.1.1.png}
     \caption{Two pulses with pulse 2 having half the amplitude of pulse 1.}
@@ -25,7 +25,7 @@ For instance, the rising edge of pulse 0 in \autoref{fig:pulse_seq} follows a cu
 
 To fulfill the requirement to generate a pulse sequence, the module uses Xilinx block RAM IPs, a state machine, and an interface to drive an external 16-bit DAC. One of the block RAMs is dedicated to the waveform table memory, where unique digital representations of pulses' waveforms are stored. A separate block RAM, known as the pulse definition table memory, holds configuration data for each pulse, including start time, sustain time, time and gain factors, waveform length, and a waveform identifier that links to the corresponding waveform stored in the waveform table memory. The state machine reads from both memories to select the appropriate waveform and configuration of a pulse, thereby driving the DAC to produce the desired pulse sequence. The area highlighted in purple in \autoref{fig:block_diagram} illustrates the relative placement of these two memories within the module, with further details discussed in later sections.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=1.0\linewidth]{figures/3.1.png}
     \caption{Block diagram of the pulse channel with two RAMs integrated.}

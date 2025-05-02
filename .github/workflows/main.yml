@@ -29,3 +29,4 @@ jobs:
         if: github.ref_type == 'tag'
         with:
           files: uwthesis.pdf
+          make_latest: true

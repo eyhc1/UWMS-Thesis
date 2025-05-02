@@ -1,14 +1,13 @@
 \chapter{Outcome and Result}
 
-% TODO: rewrite to independent from the test plan (may removed)
 \section{Simulation Result}
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=1\linewidth]{figures/6.1.png}
     \caption{\centering{Simulation result of \textbf{a.} Seed with incorrect parameters and \textbf{b.} Seed with normal parameters}}
     \label{fig:6.1}
 \end{figure}
-To validate the functionality and ensure the reliability of the pulse channel module, a controlled randomized regression test was designed and implemented. This test serves as a comprehensive evaluation of the module’s performance across several key aspects. Specifically, it examines the module's ability to execute memory read and write operations efficiently, preserve data accuracy during these processes, and manage potential errors effectively.These assessments are the cornerstone of identifying and resolving any latent issues that could compromise the module's functionality in practical applications. The results of this testing process provide significant insights into the module's behavior and confirm its expected performance. \autoref{fig:6.1} illustrates two simulation outcomes, both generated using Intel ModelSim, which visually validate the module’s operation under the given test scenarios.
+To validate the functionality and ensure the reliability of the pulse channel module, a controlled randomized regression test was designed and implemented. This test serves as a comprehensive evaluation of the module's performance across several key aspects. Specifically, it examines the module's ability to execute memory read and write operations efficiently, preserve data accuracy during these processes, and manage potential errors effectively.These assessments are the cornerstone of identifying and resolving any latent issues that could compromise the module's functionality in practical applications. The results of this testing process provide significant insights into the module's behavior and confirm its expected performance. \autoref{fig:6.1} illustrates two simulation outcomes, both generated using Intel ModelSim, which visually validate the module's operation under the given test scenarios.
 
 % A key component of this test is the use of a seed value to manage the randomization process. This seed, which begins at one and increments sequentially by one with each iteration, introduces controlled variability into the test inputs. The randomization ensures that the module's memories are subjected to diverse data patterns. These values are simultaneously applied to the module's memory system and a corresponding software model, which serves as a theoretical benchmark. By comparing the module's output with the software model, the hardware's accuracy is rigorously verified.
 
@@ -18,7 +17,7 @@ To validate the functionality and ensure the reliability of the pulse channel mo
 % \end{equation}
 % Finally, the "Pulse Number" specifies the sequential order of the pulse that produced the largest error-to-delta ratio during that iteration. Together, these detailed metrics enable us to thoroughly assess how the module responds under a wide spectrum of conditions, ultimately affirming its reliability and adherence to our stringent performance criteria.
 
-% \begin{table}[h]
+% \begin{table}[ht]
 % \centering
 % \caption{Simulation results for first 10 seeds}
 % \begin{tabular}{|c|c|c|c|}
@@ -43,7 +42,7 @@ To validate the functionality and ensure the reliability of the pulse channel mo
 
 \section{Board Result}
 The system is examined using Xilinx's Integrated Logic Analyzer (ILA) to validate signals from multiple modules, including the single pulse channel module.  
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=1\linewidth]{figures/ila.png}
     \caption{ILA monitored the result from the top level.}
@@ -51,13 +50,12 @@ The system is examined using Xilinx's Integrated Logic Analyzer (ILA) to validat
 \end{figure}
 
 A 55-sample waveform, starting from a nonzero value at 50 ns, is transmitted to the hardware and captured by the ILA (see \autoref{fig:ila}). The first output appears after 8 cycles, with each cycle lasting 10 nanoseconds. This timing results in an 80-nanosecond delay, confirming that the pulse generation operates well within the sub-microsecond range required for quantum control hardware. Furthermore, ILA data indicate that data updates occur every 10 nanoseconds, highlighting the rapid switching performance required for high-speed applications. Additionally, an external oscilloscope recorded a pulse sequence in \autoref{fig:osc}, further verifying the overall functionality and behavior of the design.
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=.85\linewidth]{figures/one_trig_seq.png}
     \caption{\centering{A single pulse sequence captured on an oscilloscope. The yellow line is the pulse sequence, the green line is the valid signal, and the red line is the trigger signal.}}
     \label{fig:osc}
 \end{figure}
-% The ILA plays a 
 
 \section{Resource Utilization}
 

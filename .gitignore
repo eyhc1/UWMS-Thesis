@@ -5,3 +5,8 @@
 *.out
 *.pdf
 *.toc
+uwthesis.synctex.gz
+uwthesis.fls
+uwthesis.fdb_latexmk
+uwthesis.blg
+uwthesis.bbl
