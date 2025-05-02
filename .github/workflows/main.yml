@@ -27,6 +27,6 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.sha }}
+          tag_name: ${{ github.sha.substring(0, 7) }}
           files: uwthesis.pdf
           make_latest: true
