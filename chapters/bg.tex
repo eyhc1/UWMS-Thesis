@@ -25,7 +25,7 @@ The ZCU102 board (\autoref{fig:fpga_diagram}) is integral for generating precise
 
 The PS is powered by a quad-core Arm\textsuperscript{\textregistered} Cortex\textsuperscript{\textregistered}-A53 processor, capable of running real-time processing applications. It incorporates multiple peripherals, such as DDR4 memory for application storage and an Advanced eXtensible Interface (AXI) that connects the PS to other components, including the programmable logic. The PL, which is the FPGA itself, contains logic cells, flip-flops, and block RAMs (BRAM) \cite{XilinxUG1182}. It provides ample capacity for storing intermediate data.
 
-This project leverages programmable logic to build custom hardware designs that serve the unique demands of quantum laser experiments. The FPGA's dedicated logic circuits and integrated high-speed interfaces enable quick, reliable communication with external modules. This capability maintains accurate control and precise timin. General-purpose I/O options, such as PMOD and FMC connectors, further simplify the experimental setup. These connectors offer flexible interfacing, allowing for both low-speed and high-speed connections that scale to the experiment's complexity without sacrificing performance.
+This project leverages programmable logic to build custom hardware designs that serve the unique demands of quantum laser experiments. The FPGA's dedicated logic circuits and integrated high-speed interfaces enable quick, reliable communication with external modules. This capability maintains accurate control and precise timing. General-purpose I/O options, such as PMOD and FMC connectors, further simplify the experimental setup. These connectors offer flexible interfacing, allowing for both low-speed and high-speed connections that scale to the experiment's complexity without sacrificing performance.
 
 In addition to the hardware features, a Python interface abstracts the low-level hardware details, streamlines testing, and integration with the FPGA platform. Indicated in \autoref{fig:fpga_diagram}, a custom C-based program running in the processing system translates Python-generated commands into data that the FPGA can efficiently process. This layered approach bridges high-level control with low-level hardware performance, ensuring that experimental algorithms and rapid prototyping can be achieved.
 
@@ -34,32 +34,33 @@ In addition to the hardware features, a Python interface abstracts the low-level
 In high-fidelity quantum computing and atomic manipulation, pulsed sequences are pivotal for delivering precise, accurate, and stable outputs to photonic integrated circuits \cite{apic}. These laser pulses (\autoref{fig:pulse_seq}) are designed with a controlled shape that consists of three distinct phases: rise, sustain, and fall. Each phase ensures quantum operations are performed reliably.
 
 \begin{figure}[h]
+    \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
+    \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
     \centering
     \includegraphics[width=1\linewidth]{figures/2.1.png}
-    \caption{Example of the pulse sequence.}
+    \caption{Example of the pulse sequence. Both the time and gain factors are set to 1}
     \label{fig:pulse_seq}
 \end{figure}
 
-During the rise phase, the laser intensity increases to its target level. A well-controlled rise minimizes errors and ensures that the experiment operate exactly when needed. The sustain phase follows, during which the laser maintains a constant optical intensity. This steady state is paramount because any fluctuation can compromise the fidelity of quantum gates by introducing operational errors \cite{naturequantuminfo}. Finally, the fall phase allows the laser power to decrease smoothly. Notably, maintaining symmetry between the rise and fall phases is critical for consistency and repeatability. In this design, the fall essentially becomes the mirror image of the rise. The rise is a programmable waveform pattern, while the sustain is a flat region with programmable length.
+During the rise phase, the laser intensity increases to its target level. A well-controlled rise minimizes errors and ensures that the experiment operate exactly when needed. The sustain phase follows, during which the laser maintains a constant optical intensity. This steady state is paramount because any fluctuation can compromise the fidelity of quantum gates by introducing operational errors \cite{naturequantuminfo}. Finally, the fall phase allows the laser power to decrease smoothly. Maintaining symmetry between the rise and fall phases is critical for consistency and repeatability. In this design, the fall essentially becomes the mirror image of the rise. The rise is a programmable waveform pattern, while the sustain is a flat region with programmable length. 
+% The user stores the waveform values and pulse configurations in the FPGA's memory.
+% TODO: this sounds better than the other version?
+In addition, user settings specify additional parameters such as start time, sustain time, and waveform length, as described in \autoref{fig:pulse_seq}. These configurations enable the module to adjust pulse characteristics programmatically without redefining the waveforms. In many cases, a pulse is produced by scaling a common base waveform using programmable factors for both time and amplitude. However, when a pulse sequence includes pulses with different time and amplitude features, the configuration selects the distinct waveforms for each pulse. This approach ensures accurate and flexible control over the behavior of the entire sequence. 
 
-Pulse 0 from \autoref{fig:pulse_seq}, with a waveform \( f_0(x) \) (green line), can be generated using the equations in \autoref{tab:pulse_eqs} at various times and phases. Here, \( S \) denotes the pulse start time, \( T \) is the waveform length, \( \alpha \) is the time factor, \( D \) is the sustain time, \( A \) is the gain factor, and \( W \) is the output value during the sustain phase. Note that in \autoref{fig:pulse_seq}, both the time and gain factors are set to 1.
-% Detailed description of the parameters are described in \autoref{tab:pd_param}.
+\begin{figure}[ht]
+    \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
+    \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
+    \centering
+    \includegraphics[width=0.7\linewidth]{figures/3.1.1.png}
+    \caption{Two pulses with pulse 2 having half the amplitude of pulse 1.}
+    \label{fig:gain_scale_example}
+\end{figure}
 
-% The pulses are represented as a series of discrete values representing a continuous function, with samples given every 10 nanoseconds to the digital-to-analog converter (DAC). These sample values can be adjusted to fine-tune the laser's output. 
-% For a waveform $f(x)$, a pulse $g(x)$ generated by the hardware for the laser can be defined by:
-
-% % TODO: more pages to simplify this equation (what time on thing)
-% \begin{equation}
-% g(x) = A \cdot 
-% \begin{cases} 
-% f\left(\dfrac{\alpha(x - S)}{T}\right), & \!\!\! S \leq x < S + \left\lceil \frac{T-1}{\alpha} \right\rceil, \\[8pt]
-% f\left(\dfrac{T-1}{T}\right), & \!\!\! S + \left\lceil \frac{T-1}{\alpha} \right\rceil \leq x < S + \left\lceil \frac{T-1}{\alpha} \right\rceil + D, \\[8pt]
-% f\left(\dfrac{\alpha\left(2\left\lceil \frac{T-1}{\alpha} \right\rceil + D - (x - S) - 1\right)}{T}\right), & \!\!\! S + \left\lceil \frac{T-1}{\alpha} \right\rceil + D \leq x < S + 2\left\lceil \frac{T-1}{\alpha} \right\rceil + D - 1, \\[8pt]
-% 0, & \!\!\! \text{otherwise}.
-% \end{cases}
-% \end{equation}
+For instance, the rising edge of pulse 0 in \autoref{fig:pulse_seq} follows a curved profile while pulse 1 increases linearly. Since these profiles cannot be interconverted by scaling alone, the user must define two unique waveforms and assign each to the respective pulse configurations. Furthermore, suppose a subsequent pulse, such as pulse 2, is intended to have half the amplitude of pulse 1 while retaining similar waveform characteristics (\autoref{fig:gain_scale_example}). In that case, the configuration should specify that pulse 2 uses the waveform of pulse 1 with a gain factor of 0.5. This structured configuration approach allows the module to adjust pulse characteristics without redefining fundamental waveforms, ensuring precise control over the entire sequence's behavior.
 
 \begin{table}[ht]
+    \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
+    \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
     \centering
     \caption{A single pulse's output at various time}
     \begin{tabularx}{\textwidth}{|X|c|X|}
@@ -97,6 +98,25 @@ Pulse 0 from \autoref{fig:pulse_seq}, with a waveform \( f_0(x) \) (green line),
     \end{tabularx}
     \label{tab:pulse_eqs}
 \end{table}
+
+For an unscaled pulse 0 from \autoref{fig:pulse_seq}, with a waveform \( f_0(x) \) (green line), can be generated using the equations in \autoref{tab:pulse_eqs} at various times and phases. Here, \( S \) denotes the pulse start time, \( T \) is the waveform length, \( \alpha \) is the time factor, \( D \) is the sustain time, \( A \) is the gain factor, and \( W \) is the output value during the sustain phase. 
+% Detailed description of the parameters are described in \autoref{tab:pd_param}.
+
+% The pulses are represented as a series of discrete values representing a continuous function, with samples given every 10 nanoseconds to the digital-to-analog converter (DAC). These sample values can be adjusted to fine-tune the laser's output. 
+% For a waveform $f(x)$, a pulse $g(x)$ generated by the hardware for the laser can be defined by:
+
+% % TODO: more pages to simplify this equation (what time on thing)
+% \begin{equation}
+% g(x) = A \cdot 
+% \begin{cases} 
+% f\left(\dfrac{\alpha(x - S)}{T}\right), & \!\!\! S \leq x < S + \left\lceil \frac{T-1}{\alpha} \right\rceil, \\[8pt]
+% f\left(\dfrac{T-1}{T}\right), & \!\!\! S + \left\lceil \frac{T-1}{\alpha} \right\rceil \leq x < S + \left\lceil \frac{T-1}{\alpha} \right\rceil + D, \\[8pt]
+% f\left(\dfrac{\alpha\left(2\left\lceil \frac{T-1}{\alpha} \right\rceil + D - (x - S) - 1\right)}{T}\right), & \!\!\! S + \left\lceil \frac{T-1}{\alpha} \right\rceil + D \leq x < S + 2\left\lceil \frac{T-1}{\alpha} \right\rceil + D - 1, \\[8pt]
+% 0, & \!\!\! \text{otherwise}.
+% \end{cases}
+% \end{equation}
+
+
 
 
 

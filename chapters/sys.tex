@@ -3,6 +3,8 @@
 
 
 \begin{figure}[h]
+    \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
+    \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
     \centering
     \includegraphics[width=1\linewidth]{figures/5.1.png}
     \caption{FPGA system architecture block diagram.}
@@ -30,6 +32,8 @@ The processing system's ARM-based CPU converts Python-generated commands into ad
 \section{Static DC Voltage Block}
 % TODO: replace with a clear picture
 \begin{figure}[h]
+    \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
+    \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
     \centering
     \includegraphics[width=0.5\linewidth]{figures/5.2.png}
     \caption{Block diagram for the DC voltage module}
@@ -40,7 +44,8 @@ The DC block provides stable and programmable static voltage control using four 
 % TODO: Again... latex is not great for hardware so far...
 \begin{table}[h]
 \centering
-
+\setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
+\setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
 \caption{SPI DAC message format}
 
 \includegraphics[width=1.0\textwidth]{figures/spi_addr.png}
@@ -61,6 +66,8 @@ Where $V_{out}$ is the voltage output by the DAC, $V_{ref}$ is the DAC's referen
 The pulse generation module—also referred to as the AC block—is a synchronous multi-channel pulse generator designed to deliver precise control for laser operations on the photonic chips. Its architecture generates pulse sequences with a 10-nanosecond resolution across 32 channels, ensuring that each digital output is synchronized. 
 
 \begin{figure}[h]
+    \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
+    \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
     \centering
     \includegraphics[width=0.8\linewidth]{figures/5.3.png}
     \caption{Block Diagram of the AC block.}
@@ -86,6 +93,8 @@ The interface functions similarly to a streamlined web API, allowing users to su
 
 % TODO: add label to explain things
 \begin{table}[h]
+\setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
+\setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
 \centering
 \caption{Sample Format of the Waveform Record}
 \label{table:param_rec_table}
@@ -110,6 +119,8 @@ The interface functions similarly to a streamlined web API, allowing users to su
 In a similar fashion, pulse parameter management is performed through dedicated functions that support both loading and retrieval. Unlike waveform data, which can vary in length and address, pulse parameters are stored in fixed groups of four values. Users provide key details such as the pulse's start time, time factor, gain factor, and sustain time, along with the relevant waveform ID. The interface then leverages this ID to fetch additional hardware parameters—such as the corresponding waveforms start address and length—converting the user inputs into a hardware-accepted format as outlined in \autoref{fig:pd}b. Corresponding records are then logged in a file following the format shown in \autoref{table:wave_rec_table}.
 
 \begin{table}[h]
+\setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
+\setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
 \centering
 \caption{Sample Format of the Pulse Parameter Record}
 \label{table:wave_rec_table}

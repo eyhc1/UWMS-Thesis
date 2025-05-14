@@ -133,7 +133,7 @@
 % TODO
 Modern quantum computing experiments demand exceptional precision, especially when controlling laser pulses for trapped-ion systems. Recent optical breakthroughs now pack dozens of channels onto a single chip, enabling efficient multichannel laser control. However, the supporting electronics often lack the necessary timing accuracy and flexibility. This shortfall can hinder progress and frustrate researchers.
 
-This thesis presents an FPGA-based laser control system on a Xilinx Zynq platform. A key module generates precise pulse waveforms and integrates into a system that delivers 32 pulsed alongside 32 static voltage signals. By leveraging dual-port block memories, state machines, and high-speed interfaces, the system achieves sub-microsecond timing with low resource usage. Simulation and board testing confirm accurate pulse generation while highlighting opportunities for enhanced precision and improved error handling. Overall, this work offers a reliable, scalable, and cost-effective solution for advanced FPGA applications in quantum control.
+This thesis presents an FPGA-based laser control system on a Xilinx Zynq platform. A key module generates precise pulse waveforms and integrates into a system that delivers 32 pulsed and 32 static voltage signals. By leveraging dual-port block memories, state machines, and high-speed interfaces, the system achieves sub-microsecond timing with low resource usage. Simulation and board testing confirm accurate pulse generation while highlighting opportunities for enhanced precision and improved error handling. Overall, this work offers a reliable, scalable, and cost-effective solution for advanced FPGA applications in quantum control.
 }
  
 %
@@ -155,7 +155,7 @@ I also appreciate Professor Sara Mouradian, a valued member of my thesis committ
 
 A sincere thank the ACME lab team for their invaluable help during the process. Special thanks to Geoffrey Jones for initiating the design. His insights and technical effort have shaped every corner of the system.
 
-I truly appreciate the support of my friends and family. I am thank to Buke Hu from QT3 Laboratory for providing essential publications on the project’s application, and to Jeffery Xu from Boeing for his technical guidance during the design phase. Lastly, I owe my deepest appreciation to my mother, Dr. Li Yang, whose constant encouragement has been a cornerstone of my journey.
+I truly appreciate the support of my friends and family. I am thank to Buke Hu from QT3 Laboratory for providing essential publications on the project’s application, and to ACME alumni Jeffery Xu for his technical guidance during the design phase. Lastly, I owe my deepest appreciation to my mother, Dr. Li Yang, whose constant encouragement has been a cornerstone of my journey.
   % \par}
 }
  
@@ -168,14 +168,14 @@ I truly appreciate the support of my friends and family. I am thank to Buke Hu f
 \textpages
 
 
-\include{chapters/intro}
-\include{chapters/bg}
-\include{chapters/block_arch}
-\include{chapters/spec}
-\include{chapters/sys}
-\include{chapters/result}
-\include{chapters/discussion}
-\include{chapters/conclusion}
+\input{chapters/intro}
+\input{chapters/bg}
+\input{chapters/block_arch}
+\input{chapters/spec}
+\input{chapters/sys}
+\input{chapters/result}
+\input{chapters/discussion}
+\input{chapters/conclusion}
 
 %
 % ==========   Bibliography

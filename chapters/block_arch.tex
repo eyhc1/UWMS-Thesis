@@ -12,18 +12,18 @@
 
 % To fulfill the requirement to generate a pulse sequence, the module relies on Xilinx block RAM IPs, a state machine, and an interface to produce pulses for an external 16-bit DAC. One of the block RAM functions as a memory to hold the unique waveforms as the waveform table memory. A separate Block RAM of the pulse channel module holds the configurations of different pulses. This RAM is the pulse definition table. 
 
-A pulse channel module generates sequences of laser pulses with user-defined configurations. In many cases, a pulse is produced by scaling a common base waveform using programmable factors for both time and amplitude. Additionally, user settings specify parameters such as start time, sustain time, and waveform length, as described in \autoref{fig:pulse_seq}. These configurations enable the module to adjust pulse characteristics programmatically without redefining the waveforms. However, when a pulse sequence includes pulses with different time and amplitude features, the configuration selects the distinct waveforms for each pulse. This approach ensures accurate and flexible control over the behavior of the entire sequence. 
+% A pulse channel module generates sequences of laser pulses with user-defined configurations. In many cases, a pulse is produced by scaling a common base waveform using programmable factors for both time and amplitude. Additionally, user settings specify parameters such as start time, sustain time, and waveform length, as described in \autoref{fig:pulse_seq}. These configurations enable the module to adjust pulse characteristics programmatically without redefining the waveforms. However, when a pulse sequence includes pulses with different time and amplitude features, the configuration selects the distinct waveforms for each pulse. This approach ensures accurate and flexible control over the behavior of the entire sequence. 
 
-For instance, the rising edge of pulse 0 in \autoref{fig:pulse_seq} follows a curved profile while pulse 1 increases linearly. Since these profiles cannot be interconverted by scaling alone, the user must define two unique waveforms and assign each to the respective pulse configurations. Furthermore, suppose a subsequent pulse, such as pulse 2, is intended to have half the amplitude of pulse 1 while retaining similar waveform characteristics (\autoref{fig:gain_scale_example}). In that case, the configuration should specify that pulse 2 uses the waveform of pulse 1 with a gain factor of 0.5. This structured configuration approach allows the module to adjust pulse characteristics without redefining fundamental waveforms, ensuring precise control over the entire sequence's behavior.
+% For instance, the rising edge of pulse 0 in \autoref{fig:pulse_seq} follows a curved profile while pulse 1 increases linearly. Since these profiles cannot be interconverted by scaling alone, the user must define two unique waveforms and assign each to the respective pulse configurations. Furthermore, suppose a subsequent pulse, such as pulse 2, is intended to have half the amplitude of pulse 1 while retaining similar waveform characteristics (\autoref{fig:gain_scale_example}). In that case, the configuration should specify that pulse 2 uses the waveform of pulse 1 with a gain factor of 0.5. This structured configuration approach allows the module to adjust pulse characteristics without redefining fundamental waveforms, ensuring precise control over the entire sequence's behavior.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.7\linewidth]{figures/3.1.1.png}
-    \caption{Two pulses with pulse 2 having half the amplitude of pulse 1.}
-    \label{fig:gain_scale_example}
-\end{figure}
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=0.7\linewidth]{figures/3.1.1.png}
+%     \caption{Two pulses with pulse 2 having half the amplitude of pulse 1.}
+%     \label{fig:gain_scale_example}
+% \end{figure}
 
-To fulfill the requirement to generate a pulse sequence, the module uses Xilinx block RAM IPs, a state machine, and an interface to drive an external 16-bit DAC. One of the block RAMs is dedicated to the waveform table memory, where unique digital representations of pulses' waveforms are stored. A separate block RAM, known as the pulse definition table memory, holds configuration data for each pulse, including start time, sustain time, time and gain factors, waveform length, and a waveform identifier that links to the corresponding waveform stored in the waveform table memory. The state machine reads from both memories to select the appropriate waveform and configuration of a pulse, thereby driving the DAC to produce the desired pulse sequence. The area highlighted in purple in \autoref{fig:block_diagram} illustrates the relative placement of these two memories within the module, with further details discussed in later sections.
+To fulfill the requirement to generate a pulse sequence, the pulse channel module uses Xilinx block RAM IPs, a state machine, and an interface to drive an external 16-bit DAC. One of the block RAMs is dedicated to the waveform table memory, where unique digital representations of pulses' waveforms are stored. A separate block RAM, known as the pulse definition table memory, holds configuration data for each pulse, including start time, sustain time, time and gain factors, waveform length, and a waveform identifier that links to the corresponding waveform stored in the waveform table memory. The state machine reads from both memories to select the appropriate waveform and configuration of a pulse, thereby driving the DAC to produce the desired pulse sequence. The area highlighted in purple in \autoref{fig:block_diagram} illustrates the relative placement of these two memories within the module, with further details discussed in later sections.
 
 \begin{figure}[h]
     \centering
@@ -39,25 +39,31 @@ Error handling is integrated into the module. Dedicated error signals are genera
 \section{Setup}
 \subsubsection{Waveform Table}
 
+\begin{figure}[htbp]
+    \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
+    \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
+    \centering
+    \includegraphics[width=0.55\linewidth]{figures/3.3.png}
+    \caption{Memory layout for waveform table}
+    \label{fig:wavetable}
+\end{figure}
 % The waveform table memory is designed to store 16-bit values that define the shape of the waveform for each pulse in a pulse sequence. The memory is a True Dual Port RAM created using Xilinx Block Memory Generator \cite{blockmemgen}. One of the ports is dedicated to user read and write values into the memory. The other port is read-only and used for the pulse channel's internal controller shown in the orange box at the bottom part of \autoref{fig:block_diagram}. Illustrated in \autoref{fig:wavetable}, user loads two 16-bit values for each memory write, while the internal controller uses one 16-bit value for each read access. While the controller performs read access to the memory, the user is also allowed to perform read access from a different port. This allows read-time monitoring and debug of the waveform values without interfering with the pulse generation. 
 
 The waveform table memory stores 16-bit values that define each pulse's shape. It is implemented as a dual-port RAM using the Xilinx Block Memory Generator \cite{blockmemgen}. One port accepts user read and write operations, while the other, designated for the pulse channel's internal controller (highlighted in the orange box in \autoref{fig:block_diagram}), is read-only. As illustrated in \autoref{fig:wavetable}, users write two 16-bit values per memory access, while the controller reads one 16-bit value. This simultaneous access facilitates real-time monitoring and debugging of waveform values without interfering with pulse generation.
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.5\linewidth]{figures/3.3.png}
-    \caption{Memory layout for waveform table}
-    \label{fig:wavetable}
-\end{figure}
+
 
 % The memory allocation of the waveform table memory is dynamic. User should specify in the pulse configuration the memory region should a pulse use for its waveform. The waveform table allows multiple pulse referencing the same memory region. This capability is beneficial when different pulses in a pulse sequence shares the same waveform features. This design is purpose-build to maximize memory utilization, ensuring each waveform receive space only what is necessary. 
 
-In addition, the waveform table memory employs dynamic allocation. For each pulse's configuration, the user specifies both the start address and the waveform length, which uniquely identify a waveform from the waveform table memory. This design enables pulses with similar waveform characteristics to share a common memory region, thereby optimizing memory usage by allocating only the required space.
+In addition, the waveform table memory employs dynamic allocation. Each pulse configuration includes a start address and a waveform length, which together uniquely identify a waveform in memory. This design allows pulses with a common waveform to share the same memory region, ensuring that only the space required for these characteristics is allocated.
 
 \subsection{Pulse Definition}
+
 \begin{figure}[htbp]
+    \setlength{\abovecaptionskip}{0pt}    % Reduces space above caption
+    \setlength{\belowcaptionskip}{0pt}    % Reduces space below caption
     \centering
-    \includegraphics[width=0.9\linewidth]{figures/3.2.png}
+    \includegraphics[width=1\linewidth]{figures/3.2.png}
     \caption{\centering{Pulse Definition RAM overall allocation. \textbf{a}, the overall allocation in the memory. \textbf{b}, specific bit-wise allocations of each pulse’s parameter.}}
     \label{fig:pd}
 \end{figure}
@@ -66,14 +72,18 @@ In addition, the waveform table memory employs dynamic allocation. For each puls
 The pulse definition memory, analogous to the waveform table memory, is implemented using a Xilinx Dual-Port RAM. Unlike the waveform table, it adopts a static allocation scheme, whereby each user-defined pulse configuration is assigned four consecutive 32-bit words, forming a 128-bit entry (see \autoref{fig:pd}a). This organized structure minimizes addressing overhead and simplifies data retrieval. Figure \autoref{fig:pd}b illustrates the specific allocation of each pulse configuration in the pulse definition memory.
 
 \subsection{Internal Controller}
-The internal controllers of the Pulse Channel module generate a precise pulse sequence by transitioning through a series of well-defined states, as illustrated in \autoref{fig:fsm}. The module is activated when an external trigger is received and the module is enabled, as shown in the bottom left of \autoref{fig:block_diagram}. Upon activation, it loads the required data from the pulse definition memory into a set of registers and then enters a waiting state until the 24-bit timer reaches the predetermined start time. This design guarantees precise pulse generation at the intended moments, ensuring seamless system synchronization.
 
 \begin{figure}[htbp]
+    \setlength{\abovecaptionskip}{0pt}    % Reduces space above caption
+    \setlength{\belowcaptionskip}{0pt}    % Reduces space below caption
     \centering
     \includegraphics[width=1\linewidth]{figures/3.4.png}
     \caption{State Diagram of the Pulse Channel Module}
     \label{fig:fsm}
 \end{figure}
+
+
+The internal controllers of the Pulse Channel module generate a precise pulse sequence by transitioning through a series of well-defined states, as illustrated in \autoref{fig:fsm}. The module is activated when an external trigger is received and the module is enabled, as shown in the bottom left of \autoref{fig:block_diagram}. Upon activation, it loads the required data from the pulse definition memory into a set of registers and then enters a waiting state until the 24-bit timer reaches the predetermined start time. This design guarantees precise pulse generation at the intended moments, ensuring seamless system synchronization.
 
 When the timer reaches the start time, the module moves sequentially through the rise, sustain, and fall stages. During these stages, it carefully shapes the pulse by controlling both the waveform table address and its data output using the time ("+" sign in \autoref{fig:block_diagram}) and gain ("x" sign in \autoref{fig:block_diagram}) factor values. After the fall stage, the module evaluates whether additional pulses remain in the pulse definition memory. If there are more pulses, it immediately loads the next one. Otherwise, it waits for a "done sequence" signal before going idle.
 
@@ -102,7 +112,7 @@ Register Bit & Error Details \\
 \hline
 0 & Wave table memory overflow \\
 \hline
-1 & Waveform size $\leq$ 1 (need to min. 2) \\
+1 & Waveform size $\leq$ 1 (need minimum of 2 values) \\
 \hline
 2 & Time factor bigger than the size of the rise \\
 \hline
@@ -110,7 +120,7 @@ Register Bit & Error Details \\
 \hline
 4 & Time factor $<$ 1 \\
 \hline
-5 & Start time too early (minim 50ns apart between pulses) \\
+5 & Start time too early (minimum 50ns apart between pulses) \\
 \hline
 6 & \textit{Not yet assigned} \\
 \hline
