@@ -2,7 +2,7 @@
 
 % TODO: rewrite to independent from the test plan (may removed)
 \section{Simulation Result}
-\begin{figure}[h]
+\begin{figure}[ht]
     \setlength{\abovecaptionskip}{0pt}    % Reduces space above caption
     \setlength{\belowcaptionskip}{0pt}    % Reduces space below caption
     \centering
@@ -45,7 +45,7 @@ To validate the functionality and ensure the reliability of the pulse channel mo
 
 \section{Board Result}
 The system is examined using Xilinx's Integrated Logic Analyzer (ILA) to validate signals from multiple modules, including the single pulse channel module.  
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=1\linewidth]{figures/ila.png}
     \caption{ILA monitored the result from the top level.}
@@ -55,7 +55,7 @@ The system is examined using Xilinx's Integrated Logic Analyzer (ILA) to validat
 \end{figure}
 
 A 55-sample waveform, starting from a nonzero value at 50 ns, is transmitted to the hardware and captured by the ILA (see \autoref{fig:ila}). The first output appears after 8 cycles, with each cycle lasting 10 nanoseconds. This timing results in an 80-nanosecond delay, confirming that the pulse generation operates well within the sub-microsecond range required for quantum control hardware. Furthermore, ILA data indicate that data updates occur every 10 nanoseconds, highlighting the rapid switching performance required for high-speed applications. Additionally, an external oscilloscope recorded a pulse sequence in \autoref{fig:osc}, further verifying the overall functionality and behavior of the design.
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=.7\linewidth]{figures/one_trig_seq.png}
     \caption{\centering{A single pulse sequence captured on an oscilloscope. The yellow line is the pulse sequence, the green line is the valid signal, and the red line is the trigger signal.}}
@@ -66,19 +66,18 @@ A 55-sample waveform, starting from a nonzero value at 50 ns, is transmitted to 
 % The ILA plays a 
 
 \section{Resource Utilization}
-
-In FPGA design, efficient resource utilization is integral for ensuring a high-quality, reliable system. One of the most core aspects of this evaluation is timing analysis. After implementation, the Xilinx Vivado tool generates an in-depth timing report that details the minimum and maximum delay paths within the design. Generated reports in \autoref{fig:sta} confirm that both setup and hold times meet the specified constraints.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=1\linewidth]{figures/timimg_report.png}
     \caption{Partial timing report from Vivado on the worst slack (top) and hold (bottom).}
-    \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
-    \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
+    \setlength{\abovecaptionskip}{0pt}    % Reduces space above caption
+    \setlength{\belowcaptionskip}{0pt}    % Reduces space below caption
     \label{fig:sta}
 \end{figure}
-This timing verification ensures that all synchronous elements operate correctly within the designated clock cycle, preventing data corruption and operational failures. 
 
-\autoref{table:chip_utilization} shows that only a small fraction of the FPGA resources are used. This low usage proves the design's efficiency. Minimal resource usage reduces power consumption. It also helps the FPGA maintain optimal timing and routing. This efficiency is ideal for scalable systems that may need future modifications. It validates the careful design decisions made during synthesis and optimization.
+In FPGA design, efficient resource utilization is integral for ensuring a high-quality, reliable system. One of the most core aspects of this evaluation is timing analysis. After implementation, the Xilinx Vivado tool generates an in-depth timing report that details the minimum and maximum delay paths within the design. Generated reports in \autoref{fig:sta} confirm that both setup and hold times meet the specified constraints.
+
+This timing verification ensures that all synchronous elements operate correctly within the designated clock cycle, preventing data corruption and operational failures. 
 
 \begin{table}[ht]
 \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
@@ -107,3 +106,5 @@ Total                   & 3.492   &       &        &          \\ \hline
 \end{tabular}
 \label{table:chip_utilization}
 \end{table}
+
+\autoref{table:chip_utilization} shows that only a small fraction of the FPGA resources are used. This low usage proves the design's efficiency. Minimal resource usage reduces power consumption. It also helps the FPGA maintain optimal timing and routing. This efficiency is ideal for scalable systems that may need future modifications. It validates the careful design decisions made during synthesis and optimization.

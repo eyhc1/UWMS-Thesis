@@ -25,7 +25,7 @@
 
 To fulfill the requirement to generate a pulse sequence, the pulse channel module uses Xilinx block RAM IPs, a state machine, and an interface to drive an external 16-bit DAC. One of the block RAMs is dedicated to the waveform table memory, where unique digital representations of pulses' waveforms are stored. A separate block RAM, known as the pulse definition table memory, holds configuration data for each pulse, including start time, sustain time, time and gain factors, waveform length, and a waveform identifier that links to the corresponding waveform stored in the waveform table memory. The state machine reads from both memories to select the appropriate waveform and configuration of a pulse, thereby driving the DAC to produce the desired pulse sequence. The area highlighted in purple in \autoref{fig:block_diagram} illustrates the relative placement of these two memories within the module, with further details discussed in later sections.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=1.0\linewidth]{figures/3.1.png}
     \caption{Block diagram of the pulse channel with two RAMs integrated.}
@@ -49,7 +49,7 @@ Error handling is integrated into the module. Dedicated error signals are genera
 \end{figure}
 % The waveform table memory is designed to store 16-bit values that define the shape of the waveform for each pulse in a pulse sequence. The memory is a True Dual Port RAM created using Xilinx Block Memory Generator \cite{blockmemgen}. One of the ports is dedicated to user read and write values into the memory. The other port is read-only and used for the pulse channel's internal controller shown in the orange box at the bottom part of \autoref{fig:block_diagram}. Illustrated in \autoref{fig:wavetable}, user loads two 16-bit values for each memory write, while the internal controller uses one 16-bit value for each read access. While the controller performs read access to the memory, the user is also allowed to perform read access from a different port. This allows read-time monitoring and debug of the waveform values without interfering with the pulse generation. 
 
-The waveform table memory stores 16-bit values that define each pulse's shape. It is implemented as a dual-port RAM using the Xilinx Block Memory Generator \cite{blockmemgen}. One port accepts user read and write operations, while the other, designated for the pulse channel's internal controller (highlighted in the orange box in \autoref{fig:block_diagram}), is read-only. As illustrated in \autoref{fig:wavetable}, users write two 16-bit values per memory access, while the controller reads one 16-bit value. This simultaneous access facilitates real-time monitoring and debugging of waveform values without interfering with pulse generation.
+The waveform table memory stores 16-bit values that define each pulse's shape. It is implemented as a dual-port RAM using the Xilinx Block Memory Generator \cite{blockmemgen}. One port accepts user read and write operations, while the other, designated for the pulse channel's internal controller (orange box in \autoref{fig:block_diagram}), is read-only. As illustrated in \autoref{fig:wavetable}, users write two 16-bit values per memory access, while the controller reads one 16-bit value. This simultaneous access facilitates real-time monitoring and debugging of waveform values without interfering with pulse generation.
 
 
 
@@ -93,14 +93,7 @@ In parallel, a dedicated process manages memory read and write operations via th
 
 \section{Error Handling}
 
-The pulse channel is engineered to be highly resilient, capable of handling both typical user inputs and unusual or invalid parameters. It accounts for common values as well as edge cases that might otherwise disrupt system operation. While the software interface manages most user-induced errors, the built-in error registers and handling mechanisms serve as the final safeguard. This layered approach prevents hazardous inputs from causing system failures, ensuring that the design remains safe and reliable even under unexpected conditions.
-
-To ensure performance, several potential cases must be carefully considered. The design guarantees that pulses begin only when the current time meets or exceeds their scheduled start. Special attention is given to the sustain length. For instance, if a pulse definition specifies a flat-top length of zero, the system immediately transitions to the fall stage. The module also keeps track of the total number of generated pulses using the internal pulse counter, which helps maintain proper sequence control. Moreover, if the start time of a subsequent pulse is earlier than that of the previous one, the pulse is omitted to preserve timing integrity.
-
-Additionally, the design manages cases where a waveform exceeds the capacity of the waveform table memory. In such instances, the system either wraps the addresses correctly back into the valid range or triggers an error flag in an 8-bit register, with each bit defined in \autoref{table:erro_regs}. 
-% One-hot encoding ensures that the error register uniquely represents each error condition with a single active flag. 
-When a specific error occurs, the system sets only the corresponding flag. This clear mapping simplifies fault diagnosis and reduces ambiguity during troubleshooting. When an error is detected, the system stops waveform generation to prevent the further propagation of invalid data, thereby maintaining overall system integrity. Furthermore, the registers are designed to log and maintain these error events, aiding in prompt debugging and corrective measures. The error registers can be cleared with an external clear flag or by resetting the system. Some registers have no error details assigned yet, allowing for future expandability based on further testing results.
-\begin{table}[h]
+\begin{table}[ht]
 \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
 \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
 \centering
@@ -128,3 +121,11 @@ Register Bit & Error Details \\
 \hline
 \end{tabular}
 \end{table}
+
+The pulse channel is engineered to be highly resilient, capable of handling both typical user inputs and unusual or invalid parameters. It accounts for common values as well as edge cases that might otherwise disrupt system operation. While the software interface manages most user-induced errors, the built-in error registers and handling mechanisms serve as the final safeguard. This layered approach prevents hazardous inputs from causing system failures, ensuring that the design remains safe and reliable even under unexpected conditions.
+
+To ensure performance, several potential cases must be carefully considered. The design guarantees that pulses begin only when the current time meets or exceeds their scheduled start. Special attention is given to the sustain length. For instance, if a pulse definition specifies a flat-top length of zero, the system immediately transitions to the fall stage. The module also keeps track of the total number of generated pulses using the internal pulse counter, which helps maintain proper sequence control. Moreover, if the start time of a subsequent pulse is earlier than that of the previous one, the pulse is omitted to preserve timing integrity.
+
+Additionally, the design manages cases where a waveform exceeds the capacity of the waveform table memory. In such instances, the system either wraps the addresses correctly back into the valid range or triggers an error flag in an 8-bit register, with each bit defined in \autoref{table:erro_regs}. 
+% One-hot encoding ensures that the error register uniquely represents each error condition with a single active flag. 
+When a specific error occurs, the system sets only the corresponding flag. This clear mapping simplifies fault diagnosis and reduces ambiguity during troubleshooting. When an error is detected, the system stops waveform generation to prevent the further propagation of invalid data, thereby maintaining overall system integrity. Furthermore, the registers are designed to log and maintain these error events, aiding in prompt debugging and corrective measures. The error registers can be cleared with an external clear flag or by resetting the system. Some registers have no error details assigned yet, allowing for future expandability based on further testing results.

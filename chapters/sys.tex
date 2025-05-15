@@ -2,7 +2,7 @@
 \chapter{System Integration}
 
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
     \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
     \centering
@@ -31,18 +31,18 @@ The processing system's ARM-based CPU converts Python-generated commands into ad
 
 \section{Static DC Voltage Block}
 % TODO: replace with a clear picture
-\begin{figure}[h]
+\begin{figure}[ht]
     \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
     \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
     \centering
-    \includegraphics[width=0.5\linewidth]{figures/5.2.png}
+    \includegraphics[width=0.4\linewidth]{figures/5.2.png}
     \caption{Block diagram for the DC voltage module}
     \label{fig:dc}
 \end{figure}
 The DC block provides stable and programmable static voltage control using four Analog Device AD5286 PMOD DACs. Each DAC supports eight voltage channels, making a total of 32 channels, as illustrated in \autoref{fig:dc}. Communication between the DACs and the system occurs via the SPI interface. These SPI interfaces are implemented as separate modules, each managing the clock, data, and chip select signals for data transmission to the DACs.
 
 % TODO: Again... latex is not great for hardware so far...
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
 \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
@@ -63,9 +63,7 @@ Where $V_{out}$ is the voltage output by the DAC, $V_{ref}$ is the DAC's referen
 
 \section{Pulse AC Voltage Block}
 
-The pulse generation module—also referred to as the AC block—is a synchronous multi-channel pulse generator designed to deliver precise control for laser operations on the photonic chips. Its architecture generates pulse sequences with a 10-nanosecond resolution across 32 channels, ensuring that each digital output is synchronized. 
-
-\begin{figure}[h]
+\begin{figure}[ht]
     \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
     \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
     \centering
@@ -73,6 +71,9 @@ The pulse generation module—also referred to as the AC block—is a synchronou
     \caption{Block Diagram of the AC block.}
     \label{fig:george}
 \end{figure}
+
+The pulse generation module—also referred to as the AC block—is a synchronous multi-channel pulse generator designed to deliver precise control for laser operations on the photonic chips. Its architecture generates pulse sequences with a 10-nanosecond resolution across 32 channels, ensuring that each digital output is synchronized. 
+
 The AC block acts as the central coordinator for all pulse channels. A Central Coordinator Process (CC-P) manages both external control signals and error notifications from individual channels, ensuring reliable overall performance. Central to its operation is a 24-bit counter that functions as a common timer, as seen in \autoref{fig:george}. Upon receiving an external trigger, this counter initiates the timing process uniformly for all channels. It continues until it reaches either a user-defined sequence length or its maximum value, at which point it sends stop signals to halt pulse generation. This coordinated stopping mechanism maintains timing precision and prevents runaway pulses that could lead to data inconsistencies.
 
 A series of internal registers underpin the module's functionality. These registers store key parameters such as the total sequence length, the active channel enable, and select for memory reading and writing operations. Values are loaded into these registers via the CPU interface, which streams configuration data from the processing system. The design supports simultaneous writing to multiple channels, a useful feature for updating pulse parameters in parallel. However, because the data bus is only 32 bits wide, the system limits read operations to one channel at a time.
@@ -89,10 +90,8 @@ The miscellaneous block is a versatile control and status interface integrated i
 % TODO: change this section to match the actual python once it has been re-made
 A dedicated Python package translates user-defined waveform values and pulse information into addresses and data formats for the hardware. This abstraction bridges the gap between users with limited hardware design experience and the intricate nature of FPGA architectures. By automating tasks such as memory management and data formatting, the system enables users to focus on refining their quantum control strategies rather than wrestling with hardware-level operations. This design philosophy enhances both usability and performance across the entire framework.
 
-The interface functions similarly to a streamlined web API, allowing users to submit waveform data and parameters intuitively. For every pulse entry, the software automatically locates the next available memory space, computes the starting address and length, and allocates the data accordingly, returning a unique waveform ID for straightforward reference. This methodical allocation ensures that inputs accumulate properly and that any error due to exceeding available memory is promptly flagged. Additionally, the system archives each waveform record in a dedicated file, providing traceability as detailed in \autoref{table:param_rec_table}. The first row for each column in the table represents a unique six-digit wave ID. The remaining rows are values for each waveform.
-
 % TODO: add label to explain things
-\begin{table}[h]
+\begin{table}[ht]
 \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
 \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
 \centering
@@ -116,9 +115,9 @@ The interface functions similarly to a streamlined web API, allowing users to su
 \end{tabular}
 \end{table}
 
-In a similar fashion, pulse parameter management is performed through dedicated functions that support both loading and retrieval. Unlike waveform data, which can vary in length and address, pulse parameters are stored in fixed groups of four values. Users provide key details such as the pulse's start time, time factor, gain factor, and sustain time, along with the relevant waveform ID. The interface then leverages this ID to fetch additional hardware parameters—such as the corresponding waveforms start address and length—converting the user inputs into a hardware-accepted format as outlined in \autoref{fig:pd}b. Corresponding records are then logged in a file following the format shown in \autoref{table:wave_rec_table}.
+The interface functions similarly to a streamlined web API, allowing users to submit waveform data and parameters intuitively. For every pulse entry, the software automatically locates the next available memory space, computes the starting address and length, and allocates the data accordingly, returning a unique waveform ID for straightforward reference. This methodical allocation ensures that inputs accumulate properly and that any error due to exceeding available memory is promptly flagged. Additionally, the system archives each waveform record in a dedicated file, providing traceability as detailed in \autoref{table:param_rec_table}. The first row for each column in the table represents a unique six-digit wave ID. The remaining rows are values for each waveform.
 
-\begin{table}[h]
+\begin{table}[ht]
 \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
 \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
 \centering
@@ -136,5 +135,7 @@ Wave ID & Start Time & Scale Gain & Scale Address & Sustain \\
 \hline
 \end{tabular}
 \end{table}
+
+In a similar fashion, pulse parameter management is performed through dedicated functions that support both loading and retrieval. Unlike waveform data, which can vary in length and address, pulse parameters are stored in fixed groups of four values. Users provide key details such as the pulse's start time, time factor, gain factor, and sustain time, along with the relevant waveform ID. The interface then leverages this ID to fetch additional hardware parameters—such as the corresponding waveforms start address and length—converting the user inputs into a hardware-accepted format as outlined in \autoref{fig:pd}b. Corresponding records are then logged in a file following the format shown in \autoref{table:wave_rec_table}.
 
 After processing, the serial interface passes these hardware-ready values to a custom Python class that integrates them with subroutines designed for the FPGA. Communication with the embedded ARM CPU is maintained via a UART connection, with the third-party PYSerial package ensuring reliable data transfer. Commands transmitted by the Python class are interpreted by the PS to activate specific design blocks defined in \autoref{fig:sys_diagram}. This layered control strategy not only streamlines user interaction but also preserves the precision and high performance required by contemporary FPGA applications.

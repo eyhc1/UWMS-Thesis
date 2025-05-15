@@ -11,7 +11,7 @@ Recent advancements in photonic integrated circuits (PICs) have substantially ad
 To fully utilize the capabilities of these advanced PICs, corresponding electronic control systems capable of generating precisely timed, flexible modulation signals at around 100 MHz resolution are necessary. The 100 MHz resolution provided by our system ensures that the modulation signals can be precisely timed and shaped, directly corresponding to the stringent timing requirements of quantum gates that often operate on microsecond timescales. Having 32 synchronous dynamic voltage channels is necessary because it allows the simultaneous manipulation of multiple qubits with coherent precision. The precise synchronization of these channels ensures minimal timing jitter and improved gate fidelity, which is indispensable for scaling quantum computing systems \cite{manychanfpgactrlsys}.
 
 \section{Hardware Description}\label{sec:bg_hw}
-% TODO: Diagram of the board/system
+
 To meet the demands of advanced control electronics, this project utilizes a Field Programmable Gate Array (FPGA). FPGAs excel at high-speed, low-latency parallel processing, enabling the simultaneous control of multiple channels and the implementation of flexible, efficient digital signal processing algorithms. These capabilities make FPGAs particularly suited for managing complex experimental setups that demand precise timing and real-time adaptability. This project employs the Xilinx Zynq UltraScale+ ZCU102 Evaluation Board, a platform chosen for its remarkable computational resources and flexible high-speed interfacing capabilities.
 
 The ZCU102 board (\autoref{fig:fpga_diagram}) is integral for generating precise modulation signals required by quantum lasers. It features a range of peripherals, including PMOD interfaces that support low-speed digital-to-analog converters (DACs) via SPI protocols, and two FMC HPC connectors for high-speed DACs. The core of this FPGA platform is the Xilinx Zynq architecture, which combines a Processing System (PS) with Programmable Logic (PL) \cite{XilinxUG1182}.
@@ -33,7 +33,7 @@ In addition to the hardware features, a Python interface abstracts the low-level
 
 In high-fidelity quantum computing and atomic manipulation, pulsed sequences are pivotal for delivering precise, accurate, and stable outputs to photonic integrated circuits \cite{apic}. These laser pulses (\autoref{fig:pulse_seq}) are designed with a controlled shape that consists of three distinct phases: rise, sustain, and fall. Each phase ensures quantum operations are performed reliably.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
     \setlength{\belowcaptionskip}{5pt}    % Reduces space below caption
     \centering
@@ -45,7 +45,7 @@ In high-fidelity quantum computing and atomic manipulation, pulsed sequences are
 During the rise phase, the laser intensity increases to its target level. A well-controlled rise minimizes errors and ensures that the experiment operate exactly when needed. The sustain phase follows, during which the laser maintains a constant optical intensity. This steady state is paramount because any fluctuation can compromise the fidelity of quantum gates by introducing operational errors \cite{naturequantuminfo}. Finally, the fall phase allows the laser power to decrease smoothly. Maintaining symmetry between the rise and fall phases is critical for consistency and repeatability. In this design, the fall essentially becomes the mirror image of the rise. The rise is a programmable waveform pattern, while the sustain is a flat region with programmable length. 
 % The user stores the waveform values and pulse configurations in the FPGA's memory.
 % TODO: this sounds better than the other version?
-In addition, user settings specify additional parameters such as start time, sustain time, and waveform length, as described in \autoref{fig:pulse_seq}. These configurations enable the module to adjust pulse characteristics programmatically without redefining the waveforms. In many cases, a pulse is produced by scaling a common base waveform using programmable factors for both time and amplitude. However, when a pulse sequence includes pulses with different time and amplitude features, the configuration selects the distinct waveforms for each pulse. This approach ensures accurate and flexible control over the behavior of the entire sequence. 
+User settings specify additional parameters such as start time, sustain time, and waveform length, as described in \autoref{fig:pulse_seq}. These configurations enable the module to adjust pulse characteristics programmatically without redefining the waveforms. In many cases, a pulse is produced by scaling a common base waveform using programmable factors for both time and amplitude. However, when a pulse sequence includes pulses with different time and amplitude features, the configuration selects the distinct waveforms for each pulse. This approach ensures accurate and flexible control over the behavior of the entire sequence. 
 
 \begin{figure}[ht]
     \setlength{\abovecaptionskip}{5pt}    % Reduces space above caption
