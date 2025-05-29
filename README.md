@@ -85,22 +85,7 @@ If you encounter missing package errors:
 miktex-console # Use package manager to install missing packages
 ```
 
-## Document Structure
-
-The thesis is organized into the following chapters:
-
-1. **Introduction** - Project motivation and overview
-2. **Background** - Laser trapped-ion experiments and hardware description
-3. **Block Architecture** - Detailed system design and implementation
-4. **Metrics for Evaluation** - Testing methodology and validation
-5. **System Integration** - Complete system architecture
-6. **Outcome and Results** - Simulation and experimental results
-7. **Discussion** - Analysis of limitations and future improvements
-8. **Conclusion** - Summary and contributions
-
-## Customization
-
-### Modifying Content
+## Modifying Content
 - Edit individual chapter files in the `chapters/` directory
 - Update bibliography entries in `uwthesis.bib`
 - Add new figures to the `figures/` directory and reference them in the text
